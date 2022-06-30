@@ -100,8 +100,6 @@ class main_instance:
                 i += 1
         log.error(f"NG - Getting soup element failed. Requests tried {str(tries)} times, without success")
         log.error(f"Failed URL: {url}")
-        log.error(str(e))
-        self.slack.msg("TamilSongDownload Script: Failure - See Log for details.", "python")
         raise AssertionError("Requests tried " + str(tries) + " times, without success")
     
     # Desstructor
@@ -117,9 +115,38 @@ class main_instance:
         args = self.args
         user_prop = self.user_prop
         
+        if args.printcache:
+            print(self.downloaded)
+        
         if args.playlist:
             self.download_playlist(url=args.playlist, skip=args.skipdownloaded)
+        
+        if args.song:
+            self.extract_song_info(args.song)
+            
+        if args.defaultplaylist:
+            for playlist in user_prop["default_playlists"].keys():
+                log.info(f"Downloading playlist: {playlist}")
+                self.download_playlist(url=user_prop["default_playlists"][playlist], skip=args.skipdownloaded)
         return
+    
+    def extract_song_info(self, url, skip):
+        log = self.log
+        log.info(f"Initiating song download for {url}")
+        
+        data_dump = self.get_requests(f"http://{self.user_prop['ip']}:{self.user_prop['port']}/song/?query={url}").json()
+        log.info(f"Found song {data_dump['song']} from {data_dump['album']}")
+        if skip and data_dump['id'] in self.downloaded.keys():
+            log.info(f"Skipping since `-s` passed. This song was previously downloaded on {self.downloaded[data_dump['id']].strftime('%b %d, %Y %H:%M:%S')}")
+        else:
+            filename = self.download_song(data_dump['media_url'], f"{song['song']}-{song['album']}({song['year']})")
+            self.write_metadata(filename, data_dump)
+            data_dump['filename'] = filename
+            self.move_to_destination(song)
+            self.downloaded[data_dump['id']] = datetime.now()
+            self.serialize_cache()
+        return
+    
     
     def download_playlist(self, url, skip):
         log = self.log
@@ -197,7 +224,13 @@ class main_instance:
         audiofile.initTag()
         audiofile.tag.artist = data['primary_artists']
         audiofile.tag.album = data['album']
-        audiofile.tag.album_artist= ', '.join(list(data['artistMap'].keys()))
+        try:
+            audiofile.tag.album_artist= ', '.join(list(data['artistMap'].keys()))
+        except:
+            try:
+                audiofile.tag.album_artist = ', '.join(list(data['artistMap']))
+            except:
+                audiofile.tag.album_artist = ""
         audiofile.tag.title = data['song']
         audiofile.tag.year = data['year']
         
