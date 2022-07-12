@@ -67,7 +67,6 @@ class main_instance:
         self.ses.headers.update(self.req_headers)
         
         return
-        
 
     def serialize_cache(self):
         """Writes the downloaded variable to cache
@@ -239,6 +238,11 @@ class main_instance:
         audiofile.tag.save()
         log.info(f"Metadata written for {data['song']}")
         return
+    
+    
+    def send_slack(self):
+        slack = Slack_util_class.Slack_instance(self.log, bot_token=self.user_prop["bot_token"])
+        
 
 
 def sanitize(filename):
