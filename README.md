@@ -1,6 +1,6 @@
 <!--- Heading --->
 <div align="center">
-  <img src="assets/logo.png" alt="logo" width="200" height="auto" />
+  <img src="assets/music-speaker.svg" alt="logo" width="75" height="auto" />
   <h1>Jiosaavn Tamilsongs</h1>
   <p>
     Download playlists/songs from Jiosaavn
