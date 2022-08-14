@@ -157,7 +157,7 @@ Inorder to ensure that all the `pip` commands are found. ensure that every time 
 * [ ] Allow individual song downloads
 * [ ] Support Gaana
 * [ ] Customize log levels
-* [ ] 
+
 <!-- License -->
 ## 6. License
 Distributed under the no License. See LICENSE.txt for more information.
