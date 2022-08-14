@@ -3,16 +3,14 @@
   <img src="assets/logo.png" alt="logo" width="200" height="auto" />
   <h1>Jiosaavn Tamilsongs</h1>
   <p>
-    Download playlists/Songs from Jiosaavn
+    Download playlists/songs from Jiosaavn
   </p>
 <h4>
-    <a href="https://github.com/Louis3797/awesome-readme-template/">View Demo</a>
+    <a href="https://github.com/rpakishore/Jiosaavn_Download">Documentation</a>
   <span> · </span>
-    <a href="https://github.com/Louis3797/awesome-readme-template">Documentation</a>
+    <a href="https://github.com/rpakishore/Jiosaavn_Download/issues/">Report Bug</a>
   <span> · </span>
-    <a href="https://github.com/Louis3797/awesome-readme-template/issues/">Report Bug</a>
-  <span> · </span>
-    <a href="https://github.com/Louis3797/awesome-readme-template/issues/">Request Feature</a>
+    <a href="https://github.com/rpakishore/Jiosaavn_Download/issues/">Request Feature</a>
   </h4>
 </div>
 <br />
@@ -21,33 +19,25 @@
 <h2>Table of Contents</h2>
 
 - [1. About the Project](#1-about-the-project)
-  - [1.1. Screenshots](#11-screenshots)
-  - [1.2. Features](#12-features)
+  - [1.1. Features](#11-features)
 - [2. Getting Started](#2-getting-started)
   - [2.1. Prerequisites](#21-prerequisites)
   - [2.2. Dependencies](#22-dependencies)
     - [2.2.1. JiosaavnAPI](#221-jiosaavnapi)
-    - [Python dependencies](#python-dependencies)
+    - [2.2.2. Python dependencies](#222-python-dependencies)
 - [3. Usage](#3-usage)
 - [4. Other Functions](#4-other-functions)
   - [4.1. update_requirements.py](#41-update_requirementspy)
 - [5. Roadmap](#5-roadmap)
-- [6. FAQ](#6-faq)
-- [7. License](#7-license)
-- [8. Contact](#8-contact)
-- [9. Acknowledgements](#9-acknowledgements)
+- [6. License](#6-license)
+- [7. Contact](#7-contact)
+- [8. Acknowledgements](#8-acknowledgements)
 
 <!-- About the Project -->
 ## 1. About the Project
-<!-- Screenshots -->
-### 1.1. Screenshots
-
-<div align="center"> 
-  <img src="https://placehold.co/600x400?text=Your+Screenshot+here" alt="screenshot" />
-</div>
 
 <!-- Features -->
-### 1.2. Features
+### 1.1. Features
 
 - Downloads Saavn songs directly from their servers
 - Captures all relevant metadata
@@ -111,7 +101,7 @@ To build your own docker image, use the following steps
     ```bash
     docker-compose up -d
     ```
-#### Python dependencies
+#### 2.2.2. Python dependencies
 Create the virutual environment and install dependencies
 
 ```bash
@@ -132,7 +122,13 @@ Create a file `nosync_userinput.json` with the following formatting
     "ip":"<IP to access JiosaavnAPI wrapper>",
     "port":"<Port # for accessing JiosaavnAPI wrapper>",
     "Cache_file":"Jiosaavn_cache",
-    "final_destination":"<Path to destination folder>"
+    "final_destination":"<Path to destination folder>",
+    "bot_token":"<Slackbot token>",
+    "default_playlists":{
+        "Top Tamil Kuthu Songs":"https://www.jiosaavn.com/featured/top-kuthu---tamil/CNVzQf7lvT8wkg5tVhI3fw__",
+        "Tamil Chartbusters": "https://www.jiosaavn.com/featured/tamil_chartbusters/1HiqW,xnqZRieSJqt9HmOQ__",
+        "Tamil Weekly Top 20": "https://www.jiosaavn.com/featured/weekly_top_songs/x7NaWNE3kRw_"
+    }
 }
 ```
 
@@ -161,21 +157,13 @@ Inorder to ensure that all the `pip` commands are found. ensure that every time 
 * [ ] Allow individual song downloads
 * [ ] Support Gaana
 * [ ] Customize log levels
-
-<!-- FAQ -->
-## 6. FAQ
-- Question 1
-  + Answer 1
-
-- Question 2
-  + Answer 2
-
+* [ ] 
 <!-- License -->
-## 7. License
+## 6. License
 Distributed under the no License. See LICENSE.txt for more information.
 
 <!-- Contact -->
-## 8. Contact
+## 7. Contact
 
 Arun Kishore - [@rpakishore](mailto:rpakishore@gmail.com)
 
@@ -183,6 +171,6 @@ Project Link: [https://github.com/rpakishore/](https://github.com/rpakishore/)
 
 
 <!-- Acknowledgments -->
-## 9. Acknowledgements
+## 8. Acknowledgements
  - [Awesome README Template](https://github.com/Louis3797/awesome-readme-template/blob/main/README-WITHOUT-EMOJI.md)
  - [JiosaavnAPI](https://github.com/cyberboysumanjay/JioSaavnAPI)
