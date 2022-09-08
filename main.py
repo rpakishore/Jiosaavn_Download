@@ -11,7 +11,7 @@ def ParseCmdLine(cmd_line=None):
     # https://docs.python.org/zh-tw/3/library/argparse.html#module-argparse
     parser = argparse.ArgumentParser(description='Template Title')
     parser.add_argument('-v', '--version', action='version', version=version_number)
-    parser.add_argument('-f', '--filename', type=str, default='nosync_userinput.json')
+    parser.add_argument('-f', '--filename', type=str, default='userinput.json')
     parser.add_argument('-p', '--playlist', type=str, default=None)
     parser.add_argument('-s', '--song', type=str, default=None)
     parser.add_argument('-sd', '--skipdownloaded', default=False, action='store_true', help='Skips previously downloaded songs')

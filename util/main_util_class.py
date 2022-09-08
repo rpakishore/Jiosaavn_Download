@@ -7,7 +7,7 @@ from util import AK_log
 import json, pickle, os, time, shutil, unicodedata, re
 
 from util import AK_log
-from util import Slack_util_class
+#from util import Slack_util_class
 
 from datetime import datetime
 from sys import platform
@@ -129,7 +129,7 @@ class main_instance:
                 self.download_playlist(url=user_prop["default_playlists"][playlist], skip=args.skipdownloaded)
         return
     
-    def extract_song_info(self, url, skip):
+    def extract_song_info(self, url, skip=False):
         log = self.log
         log.info(f"Initiating song download for {url}")
         
@@ -138,10 +138,10 @@ class main_instance:
         if skip and data_dump['id'] in self.downloaded.keys():
             log.info(f"Skipping since `-s` passed. This song was previously downloaded on {self.downloaded[data_dump['id']].strftime('%b %d, %Y %H:%M:%S')}")
         else:
-            filename = self.download_song(data_dump['media_url'], f"{song['song']}-{song['album']}({song['year']})")
+            filename = self.download_song(data_dump['media_url'], f"{data_dump['song']}-{data_dump['album']}({data_dump['year']})")
             self.write_metadata(filename, data_dump)
             data_dump['filename'] = filename
-            self.move_to_destination(song)
+            self.move_to_destination(data_dump)
             self.downloaded[data_dump['id']] = datetime.now()
             self.serialize_cache()
         return
@@ -238,11 +238,7 @@ class main_instance:
         audiofile.tag.save()
         log.info(f"Metadata written for {data['song']}")
         return
-    
-    
-    def send_slack(self):
-        slack = Slack_util_class.Slack_instance(self.log, bot_token=self.user_prop["bot_token"])
-        
+            
 
 
 def sanitize(filename):

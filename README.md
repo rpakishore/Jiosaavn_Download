@@ -115,7 +115,7 @@ pip install -r requirements.txt
 <!-- Usage -->
 ## 3. Usage
 
-Create a file `nosync_userinput.json` with the following formatting
+Create a file `userinput.json` with the following formatting
 
 ```json
 {
@@ -123,7 +123,6 @@ Create a file `nosync_userinput.json` with the following formatting
     "port":"<Port # for accessing JiosaavnAPI wrapper>",
     "Cache_file":"Jiosaavn_cache",
     "final_destination":"<Path to destination folder>",
-    "bot_token":"<Slackbot token>",
     "default_playlists":{
         "Top Tamil Kuthu Songs":"https://www.jiosaavn.com/featured/top-kuthu---tamil/CNVzQf7lvT8wkg5tVhI3fw__",
         "Tamil Chartbusters": "https://www.jiosaavn.com/featured/tamil_chartbusters/1HiqW,xnqZRieSJqt9HmOQ__",

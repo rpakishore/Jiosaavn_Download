@@ -1,0 +1,11 @@
+{
+    "ip":"192.168.107.5",
+    "port":"9027",
+    "Cache_file":"Jiosaavn_cache",
+    "final_destination":"Y:\\Plex Media Files\\Music\\AK_Playlist",
+    "default_playlists":{
+        "Top Tamil Kuthu Songs":"https://www.jiosaavn.com/featured/top-kuthu---tamil/CNVzQf7lvT8wkg5tVhI3fw__",
+        "Tamil Chartbusters": "https://www.jiosaavn.com/featured/tamil_chartbusters/1HiqW,xnqZRieSJqt9HmOQ__",
+        "Tamil Weekly Top 20": "https://www.jiosaavn.com/featured/weekly_top_songs/x7NaWNE3kRw_"
+    }
+}
