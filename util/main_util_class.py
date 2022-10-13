@@ -3,7 +3,7 @@
 
 # Reference - 
 # http://yhhuang1966.blogspot.com/2018/04/python-logging_24.html
-from util import AK_log
+from dataclasses import dataclass
 import json, pickle, os, time, shutil, unicodedata, re
 
 from util import AK_log
@@ -23,7 +23,24 @@ from ffmpy import FFmpeg
 #pip install eyed3
 import eyed3
 
+import pytest
 
+@dataclass
+class song:
+    album: str
+    album_url: str
+    artists: list
+    duration: int
+    image_url: str
+    media_url: str
+    release_date: str
+    singers: str
+    title: str
+    year: int
+    id: str
+    filename:str = ""
+    
+    
 class main_instance:
     homedir = os.path.expanduser('~')
     # Define log level
@@ -65,6 +82,7 @@ class main_instance:
                 'Upgrade-Insecure-Requests': '1'
             }
         self.ses.headers.update(self.req_headers)
+        self.new_songs = []
         
         return
 
@@ -146,18 +164,42 @@ class main_instance:
             self.serialize_cache()
         return
     
-    
-    def download_playlist(self, url, skip):
+
+    def collect_songs_from_playlist(self, url: str):
+        """
+        Takes a jiosaavn playlist url as input and returns a list of song objects
+
+        Returns:
+            list[song]: Returns a list of song object
+        """
+        json_data = self.get_playlist_data(url)
+        return [parse_song_data(song_info) for song_info in json_data['songs']]
+            
+
+    def get_playlist_data(self, url: str):
+        """Takes a Jiosaavn URL and returns the json data from the locally hosted Jiosaavn API endpoint
+
+        Args:
+            url (str): Jiosaavn PLAYLIST url
+
+        Returns:
+            dict: Json data returned from the API
+        """
+        log = self.log
+        log.info(f"Initiating playlist download for {url}")
+        jiosaavn_hosted_url = f"http://{self.user_prop['ip']}:{self.user_prop['port']}/result/"
+        return self.get_requests(f"{jiosaavn_hosted_url}?query={url}").json()
+
+    def download_playlist(self, url: str, skip: bool):
         log = self.log
         log.info(f"Initiating playlist download for {url}")
         
-        data_dump = self.get_requests(f"http://{self.user_prop['ip']}:{self.user_prop['port']}/result/?query={url}").json()
-        
+        songs = self.collect_songs_from_playlist(url)
         to_download = []
-        for song in data_dump['songs']:
-            log.info(f"Found song {song['song']} from {song['album']}")
-            if skip and song['id'] in self.downloaded.keys():
-                log.info(f"Skipping since `-s` passed. This song was previously downloaded on {self.downloaded[song['id']].strftime('%m %d, %Y %H:%M:%S')}")
+        for song in songs:
+            log.info(f"Found song {song.title} from {song.album}")
+            if skip and song.id in self.downloaded.keys():
+                log.info(f"Skipping since `-s` passed. This song was previously downloaded on {self.downloaded[song.id].strftime('%m %d, %Y %H:%M:%S')}")
                 continue
             else:
                 to_download.append(song)
@@ -165,12 +207,12 @@ class main_instance:
         
         log.info(f"{len(to_download)} songs will be downloaded.")
         for song in to_download:
-            filename = self.download_song(song['media_url'], f"{song['song']}-{song['album']}({song['year']})")
-            self.write_metadata(filename, song)
-            song['filename'] = filename
+            song.filename = self.download_song(song.media_url, f"{song.title}-{song.album}({song.year})")
+            self.write_metadata(song.filename, song)
             self.move_to_destination(song)
-            self.downloaded[song['id']] = datetime.now()
+            self.downloaded[song.id] = datetime.now()
             self.serialize_cache()
+            self.new_songs.append(song)
         return
     
     def move_to_destination(self, song):
@@ -216,27 +258,23 @@ class main_instance:
         log.info(f"Download completed ({round(size,2)} MB) in {round(time_taken,1)} sec(s) at {round(size/time_taken, 1)} MB/s")
         return local_filename
         
-    def write_metadata(self, filename, data):
+        
+    def write_metadata(self, filename, song):
         log = self.log
         log.debug(f"Writing metadata to {filename}")
         audiofile = eyed3.load(filename)
         audiofile.initTag()
-        audiofile.tag.artist = data['primary_artists']
-        audiofile.tag.album = data['album']
-        try:
-            audiofile.tag.album_artist= ', '.join(list(data['artistMap'].keys()))
-        except:
-            try:
-                audiofile.tag.album_artist = ', '.join(list(data['artistMap']))
-            except:
-                audiofile.tag.album_artist = ""
-        audiofile.tag.title = data['song']
-        audiofile.tag.year = data['year']
+        audiofile.tag.artist = song.artists
+        audiofile.tag.album = song.album
+        audiofile.tag.album_artist= ', '.join(song.artists)
+
+        audiofile.tag.title = song.title
+        audiofile.tag.year = str(song.year)
         
-        res = self.get_requests(data['image'])
+        res = self.get_requests(song.image_url)
         audiofile.tag.images.set(3, res.content, "image/jpeg", u"cover")
         audiofile.tag.save()
-        log.info(f"Metadata written for {data['song']}")
+        log.info(f"Metadata written for {song.title}")
         return
             
 
@@ -286,3 +324,53 @@ def sanitize(filename):
         if len(filename) == 0:
             filename = "__"
     return filename
+
+def parse_song_data(song_dict: dict) -> song:
+    """Takes a dict of song data from Jiosaavn and turns it into a song object  
+
+    Returns:
+        song: Song object of the data passed
+    """
+    album = song_dict["album"] if "album" in song_dict.keys() else ""
+    album_url = song_dict["album_url"] if "album_url" in song_dict.keys() else ""
+    if "artistMap" in song_dict.keys():
+        if type(song_dict['artistMap']) == dict:
+            artists = list(song_dict['artistMap'].keys())
+        elif type(song_dict['artistMap']) == list:
+            artists = song_dict['artistMap']
+        else:
+            artists = ""
+    artists = list(song_dict['artistMap'].keys()) if "singers" in song_dict.keys() else ""
+    duration = int(song_dict["duration"]) if "duration" in song_dict.keys() else ""
+    image_url = song_dict["image"] if "image" in song_dict.keys() else ""
+    year = int(song_dict["year"]) if "year" in song_dict.keys() else ""
+    media_url = song_dict["media_url"] if "media_url" in song_dict.keys() else ""
+    release_date = song_dict["release_date"] if "release_date" in song_dict.keys() else ""
+    singers = song_dict["singers"].split(', ') if "singers" in song_dict.keys() else ""
+    title = song_dict["song"]
+    id = song_dict["id"]
+    
+    return song(
+        album=album, album_url=album_url, artists=artists, duration=duration, 
+        image_url=image_url, media_url=media_url, release_date=release_date, 
+        singers=singers, title=title, year=year, id=id
+    )
+
+def test_parse_song_data():
+    with open('userinput.json', 'r') as f:
+        user_prop = json.load(f)
+    url = f"http://{user_prop['ip']}:{user_prop['port']}/result/?query=https://www.jiosaavn.com/featured/romantic-hits-2020—hindi/ABiMGqjovSFuOxiEGmm6lQ__"
+    raw_data = requests.get(url).json()['songs'][0]
+    song_obj = parse_song_data(raw_data)
+    
+    assert type(song_obj) == song
+    assert song_obj.album == "Love Aaj Kal (Original Motion Picture Soundtrack)"
+    assert song_obj.album_url == "https://www.jiosaavn.com/album/love-aaj-kal-original-motion-picture-soundtrack/08dQgBZGh20_"
+    assert song_obj.artists == ["Arijit Singh", "Irshad Kamil", "Kartik Aaryan", "Pritam", "Sara Ali Khan"]
+    assert song_obj.duration == 247
+    assert song_obj.image_url == "https://c.saavncdn.com/862/Love-Aaj-Kal-Hindi-2020-20200214140423-500x500.jpg"
+    assert song_obj.year == 2020
+    assert song_obj.media_url == "https://aac.saavncdn.com/862/e277c1b441b562640c6b264aa3335a83_320.mp4"
+    assert song_obj.release_date == "2020-02-14"
+    assert song_obj.singers == ["Pritam", "Arijit Singh"]
+    assert song_obj.title == "Shayad"
