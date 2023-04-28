@@ -6,7 +6,6 @@
 from util import AK_log
 import json, pickle, os, time, shutil, unicodedata, re
 
-from util import AK_log
 #from util import Slack_util_class
 
 from datetime import datetime

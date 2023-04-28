@@ -1,0 +1,26 @@
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "ak_jiosaavn"
+authors = [{name = "Arun Kishore", email = "pypi@rpakishore.co.in"}]
+readme = "README.md"
+license = {file = "LICENSE"}
+classifiers = ["License :: OSI Approved :: MIT License"]
+dynamic = ["version", "description"]
+dependencies = [
+    "requests",
+    "ffmpy",
+    "eyed3",
+    "ak_cache",
+    "typer[all]",
+    "slack_sdk",
+    "keyring",
+    "pytest"
+]
+[project.urls]
+Home = "https://github.com/rpakishore/ak_jiosaavn"
+
+[project.scripts]
+jiosaavn="ak_jiosaavn.cli_app:app"
