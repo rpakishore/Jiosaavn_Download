@@ -41,8 +41,9 @@ class JiosaavnAPI:
     def __repr__(self) -> str:
         return "JiosaavnAPI()"
     
-    def get(self, url) -> Response:
+    def get(self, url: str) -> Response:
         return _get_requests(
+            url = url,
             log = self.log,
             session=self.ses,
             tries = 3,
@@ -55,7 +56,7 @@ class JiosaavnAPI:
         log.info(f"Initiating song download for {url}")
     
         song_response = self.get(
-            url = self.song_request_url.format(self.url))
+            url = self.song_request_url.format(url))
         return _parse_song_info(song_response.json(), log=self.log)
     
     def _download_song(self, song: Song):
@@ -82,7 +83,7 @@ class JiosaavnAPI:
         log = self.log
         log.info(f"Initiating playlist download for {url}")
         playlist_data = self.get(
-            url = self.playlist_request_url.format(self.url)).json()
+            url = self.playlist_request_url.format(url)).json()
         song_datas = playlist_data['songs']
         for song_data in song_datas:
             song = _parse_song_info(song_data=song_data, log=self.log)
