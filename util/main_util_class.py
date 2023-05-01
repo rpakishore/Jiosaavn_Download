@@ -22,6 +22,12 @@ from ffmpy import FFmpeg
 #pip install eyed3
 import eyed3
 
+from dataclasses import dataclass
+
+@dataclass
+class song_obj:
+    name: str
+    album: str
 
 class main_instance:
     homedir = os.path.expanduser('~')
@@ -77,7 +83,7 @@ class main_instance:
         return
     
     
-    def get_requests(self, url, tries = 3, delay = 0, timeout = 10):
+    def get_requests(self, url: str, tries: int = 3, delay: int = 0, timeout: int = 10):
         log = self.log
         log.info(f"Initiating requests: {url}")
         
@@ -154,6 +160,7 @@ class main_instance:
         
         to_download = []
         for song in data_dump['songs']:
+
             log.info(f"Found song {song['song']} from {song['album']}")
             if skip and song['id'] in self.downloaded.keys():
                 log.info(f"Skipping since `-s` passed. This song was previously downloaded on {self.downloaded[song['id']].strftime('%m %d, %Y %H:%M:%S')}")
