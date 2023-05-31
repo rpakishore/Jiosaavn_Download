@@ -1,5 +1,5 @@
 beautifulsoup4==4.11.1
-certifi==2022.6.15
+certifi==2022.12.7
 charset-normalizer==2.1.0
 colorama==0.4.5
 coverage==5.5
@@ -17,7 +17,7 @@ toml==0.10.2
 tqdm==4.64.0
 urllib3==1.26.10
 beautifulsoup4==4.11.1
-certifi==2022.6.15
+certifi==2022.12.7
 charset-normalizer==2.1.0
 colorama==0.4.5
 coverage==5.5
