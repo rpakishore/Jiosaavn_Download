@@ -1,6 +1,6 @@
 ak_cache==0.0.3
 ak_file==0.0.4
-ak_jiosaavn @ file:///C:/Users/rpaki/Documents/GitHub/Jiosaavn_Download
+ak_jiosaavn @ file:///C:/Users/rpakishore/Documents/GitHub/Jiosaavn_Download
 beautifulsoup4==4.11.1
 certifi==2022.6.15
 cffi==1.15.1
