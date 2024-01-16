@@ -2,7 +2,7 @@ ak_cache==0.0.3
 ak_file==0.0.4
 ak_jiosaavn @ file:///C:/Users/rpakishore/Documents/GitHub/Jiosaavn_Download
 beautifulsoup4==4.11.1
-certifi==2022.6.15
+certifi==2023.7.22
 cffi==1.15.1
 charset-normalizer==2.1.0
 click==8.1.3
