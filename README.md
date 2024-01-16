@@ -1,3 +1,4 @@
+**This product is not maintained anymore - Refer to [JiosaavnDownloader](https://github.com/rpakishore/JiosaavnDownloader) repo for an up-to-date solution.**
 <!--- Heading --->
 <div align="center">
   <img src="assets/music-speaker.svg" alt="logo" width="75" height="auto" />
